@@ -1,17 +1,11 @@
-modules = ["nodejs-20", "bash", "web"]
-run = "npm run dev"
-hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-deploymentTarget = "cloudrun"
-run = ["sh", "-c", "npm run dev"]
-
-[[ports]]
-localPort = 5000
-externalPort = 80
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "streamlit run main.py --server.port 5000"]
 
 [workflows]
 runButton = "Project"
@@ -23,10 +17,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "Streamlit App"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "Streamlit App"
 author = "agent"
 
 [workflows.workflow.metadata]
@@ -37,5 +31,9 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "streamlit run main.py --server.port 5000"
 waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
